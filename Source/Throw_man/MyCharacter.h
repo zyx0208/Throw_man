@@ -8,6 +8,7 @@
 #include "GameFramework/Character.h"
 #include "MyCharacter.generated.h"
 
+
 UCLASS()
 class THROW_MAN_API AMyCharacter : public ACharacter
 {
@@ -17,6 +18,10 @@ class THROW_MAN_API AMyCharacter : public ACharacter
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = MYCha_Cam, meta = (AllowPrivateAccess = "true"))
 		class UCameraComponent* FollowCamera;
+
+	UPROPERTY(EditAnywhere)
+		TSubclassOf<class APlayerProjectile> PlayerProjectile;
+
 public:
 	// Sets default values for this character's properties
 	AMyCharacter();
@@ -30,8 +35,17 @@ protected:
 	void MoveRight(float Value);
 	void MoveForward(float Value);
 
+	//Throw Logic
+	void PreThrowBall();
+	void ThrowBall();
+	float ChargedTime;
+	class APlayerProjectile* Projectile;
+	
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+	bool isThrowing;
+	bool canTeleport;
 
 };
