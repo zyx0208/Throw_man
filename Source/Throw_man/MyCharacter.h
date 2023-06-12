@@ -13,14 +13,15 @@ UCLASS()
 class THROW_MAN_API AMyCharacter : public ACharacter
 {
 	GENERATED_BODY()
-		UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = MYCha_Cam, meta = (AllowPrivateAccess = "true"))
-		class USpringArmComponent* CameraBoom;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = MYCha_Cam, meta = (AllowPrivateAccess = "true"))
+	class USpringArmComponent* CameraBoom;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = MYCha_Cam, meta = (AllowPrivateAccess = "true"))
-		class UCameraComponent* FollowCamera;
+	class UCameraComponent* FollowCamera;
 
 	UPROPERTY(EditAnywhere)
-		TSubclassOf<class APlayerProjectile> PlayerProjectile;
+	TSubclassOf<class APlayerProjectile> PlayerProjectile;
 
 public:
 	// Sets default values for this character's properties
@@ -47,5 +48,9 @@ public:
 	virtual void Tick(float DeltaTime) override;
 	bool isThrowing;
 	bool canTeleport;
+
+
+private :
+	class UHealthComponent* HealthComponent;
 
 };

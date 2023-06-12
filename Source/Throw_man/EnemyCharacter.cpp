@@ -3,9 +3,11 @@
 
 #include "EnemyCharacter.h"
 #include "Engine/World.h"	// 적의 현재 월드를 구하기 위해 사용
-#include "DrawDebugHelpers.h"
 #include "Kismet/KismetMathLibrary.h"	// 캐릭터 회전하기 위해 사용
 #include "Kismet/GameplayStatics.h"	// Player 캐릭터 구하기 위해 사용
+#include "TimerManager.h"
+#include "BulletProjectile.h"
+#include "BulletFunctionLibrary.h"
 
 // Sets default values
 AEnemyCharacter::AEnemyCharacter()
@@ -34,7 +36,20 @@ void AEnemyCharacter::Tick(float DeltaTime)
 	ACharacter* PlayerCharacter = UGameplayStatics::GetPlayerCharacter(this, 0);
 
 	// Player 캐릭터 바라보기
-	LookAtActor(PlayerCharacter);
+	bCanSeePlayer = LookAtActor(PlayerCharacter);
+	
+	if (bCanSeePlayer != bPreviousCanSeePlayer) {
+		if (bCanSeePlayer) {
+			// 총알 발사 시작
+			GetWorldTimerManager().SetTimer(FireTimerHandle, this, &AEnemyCharacter::FireBullet, FireInterval, true, FireDelay);
+		}
+		else {
+			// 총알 발사 중지
+			GetWorldTimerManager().ClearTimer(FireTimerHandle);
+		}
+	}
+
+	bPreviousCanSeePlayer = bCanSeePlayer;
 	//UE_LOG(LogTemp, Log, TEXT("CanSeeActor :%d"), CanSeeActor(PlayerCharacter));
 }
 
@@ -45,46 +60,39 @@ void AEnemyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 
 }
 
-bool AEnemyCharacter::CanSeeActor(const AActor* TargetActor) const {
+bool AEnemyCharacter::LookAtActor(AActor* TargetActor) {
 	if (TargetActor == nullptr) {
 		return false;
 	}
 
-	// 라인 트레이스의 결과 저장
-	FHitResult Hit;
-	// 라인 트레이스 시작지점-대상지점
-	FVector Start = SightSource->GetComponentLocation();
-	FVector End = TargetActor->GetActorLocation();
+	const TArray<const AActor*> IgnoreActors = { this, TargetActor };
 
-	// 트레이스 채널: 시야 판단을 위해 비교
-	// ECC_Visibility: Visibility 트레이스 채널
-	ECollisionChannel Channel = ECollisionChannel::ECC_GameTraceChannel2;
-
-	// Enemy와 Player 사이에서 적을 방해하는 물체가 있는지 판단
-	FCollisionQueryParams QueryParams;
-	QueryParams.AddIgnoredActor(this);	// Enemy 무시
-	QueryParams.AddIgnoredActor(TargetActor);	// Player 무시
-
-	// 라인 트레이스 실행
-	GetWorld()->LineTraceSingleByChannel(Hit, Start, End, Channel, QueryParams);
-
-	// 게임에서 라인 트레이스 보여주기
-	DrawDebugLine(GetWorld(), Start, End, FColor::Red);
-
-	return !Hit.bBlockingHit;
-}
-
-void AEnemyCharacter::LookAtActor(AActor* TargetActor) {
-	if (TargetActor == nullptr) {
-		return;
-	}
-
-	if (CanSeeActor(TargetActor)) {
+	if (UBulletFunctionLibrary::CanSeeActor(
+		GetWorld(),
+		SightSource->GetComponentLocation(),
+		TargetActor,
+		IgnoreActors)) {
 		FVector Start = GetActorLocation();
 		FVector End = TargetActor->GetActorLocation();
 		// 회전 계산
 		FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(Start, End);
 		// 회전값 설정
 		SetActorRotation(LookAtRotation);
+
+		return true;
 	}
+
+	return false;
+}
+
+void AEnemyCharacter::FireBullet() {
+	if (BulletClass == nullptr) {
+		return;
+	}
+
+	FVector ForwardVector = GetActorForwardVector();
+	float SpawnDistance = 40.f;
+	FVector SpawnLocation = GetActorLocation() + (ForwardVector * SpawnDistance);
+	// 새 총알 스폰하기
+	GetWorld()->SpawnActor<ABulletProjectile>(BulletClass, SpawnLocation, GetActorRotation());
 }

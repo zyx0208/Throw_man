@@ -10,6 +10,7 @@
 #include "PlayerProjectile.h"
 #include "Components/SphereComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
+#include "HealthComponent.h"
 
 // Sets default values
 AMyCharacter::AMyCharacter()
@@ -39,6 +40,8 @@ AMyCharacter::AMyCharacter()
 	isThrowing = false;
 	canTeleport = false;
 	Projectile = nullptr;
+
+	HealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("HealthComponent"));
 }
 
 // Called when the game starts or when spawned
