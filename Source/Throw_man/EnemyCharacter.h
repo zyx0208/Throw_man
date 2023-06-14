@@ -27,12 +27,17 @@ protected:
 	// 전달된 액터 방향으로 Enemy 회전, 전달된 액터를 볼 수 있는지 확인
 	bool LookAtActor(AActor* TargetActor);
 	// 전달된 액터를 볼 수 있는지 확인
-	bool CanSeeActor(const AActor* TargetActor) const;
+	//bool CanSeeActor(const AActor* TargetActor) const;
 
 	// 적 캐릭터가 이번 프레임에 플레이어를 볼 수 있는가
 	bool bCanSeePlayer = false;
 	// 적 캐릭터가 이전 프레임에 플레이어를 볼 수 있는가
 	bool bPreviousCanSeePlayer = false;
+
+	// 적 캐릭터와 플레이어의 거리
+	//float characterDistance = 0.0f;
+	// 적 캐릭터 속도
+	float Speed = 0.f;
 
 	// 총알 발사 간격 타이머
 	FTimerHandle FireTimerHandle;

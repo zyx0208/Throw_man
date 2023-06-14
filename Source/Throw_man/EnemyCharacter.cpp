@@ -38,8 +38,30 @@ void AEnemyCharacter::Tick(float DeltaTime)
 	// Player 캐릭터 바라보기
 	bCanSeePlayer = LookAtActor(PlayerCharacter);
 	
+	// Player 캐릭터와 Enemy 캐릭터의 거리
+	//characterDistance = FVector::Distance(this->GetActorLocation(), PlayerCharacter->GetActorLocation());
+	//UE_LOG(LogTemp, Log, TEXT("characterDistance: %f"), characterDistance);
+
+	// Enemy 캐릭터 속도 구하기
+	Speed = FVector::DotProduct(GetVelocity(), GetActorRotation().Vector());
+	/*
 	if (bCanSeePlayer != bPreviousCanSeePlayer) {
-		if (bCanSeePlayer) {
+		UE_LOG(LogTemp, Log, TEXT("I can see"));
+		if (bCanSeePlayer && Speed == 0.0f) {
+			UE_LOG(LogTemp, Log, TEXT("Fire"));
+			// 총알 발사 시작
+			GetWorldTimerManager().SetTimer(FireTimerHandle, this, &AEnemyCharacter::FireBullet, FireInterval, true, FireDelay);
+		}
+		else {
+			// 총알 발사 중지
+			GetWorldTimerManager().ClearTimer(FireTimerHandle);
+		}
+	}
+	*/
+	if (bCanSeePlayer) {
+		UE_LOG(LogTemp, Log, TEXT("I can see"));
+		if (Speed == 0.0f) {
+			UE_LOG(LogTemp, Log, TEXT("Fire"));
 			// 총알 발사 시작
 			GetWorldTimerManager().SetTimer(FireTimerHandle, this, &AEnemyCharacter::FireBullet, FireInterval, true, FireDelay);
 		}
