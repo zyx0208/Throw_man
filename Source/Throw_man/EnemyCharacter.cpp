@@ -50,7 +50,7 @@ void AEnemyCharacter::Tick(float DeltaTime)
 	//Direction = Direction.GetSafeNormal();	// 단위벡터
 	//UE_LOG(LogTemp, Log, TEXT("Distance: %f"), Distance);
 	// 플레이어가 보이고 있고, 플레이어와의 거리가 300이 넘을 때 움직이기
-	
+	/*
 	if (bCanSeePlayer && Distance > 300.f) {
 		//UE_LOG(LogTemp, Log, TEXT("Moving"));
 		FVector Location = GetActorLocation();
@@ -62,7 +62,7 @@ void AEnemyCharacter::Tick(float DeltaTime)
 		//UE_LOG(LogTemp, Log, TEXT("Location: %s"), Location.ToString());
 		GetCharacterMovement()->Velocity = Location;
 	}
-	
+	*/
 	/* 발사 시작 타이머 설정 조건 */
 	// 조건1: 플레이어가 보이고, 거리가 300 이하
 	if (bCanSeePlayer) {
@@ -143,7 +143,8 @@ void AEnemyCharacter::FireBullet() {
 
 	FVector ForwardVector = GetActorForwardVector();
 	float SpawnDistance = 40.f;
-	FVector SpawnLocation = GetActorLocation() + (ForwardVector * SpawnDistance);
+	FVector SpawnLocation = GetMesh()->GetSocketLocation(FName("weapon_hand_r")) + (ForwardVector * SpawnDistance);
 	// 새 총알 스폰하기
 	GetWorld()->SpawnActor<ABulletProjectile>(BulletClass, SpawnLocation, GetActorRotation());
 }
+//weapon_hand_r
