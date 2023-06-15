@@ -6,6 +6,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Components/InputComponent.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Kismet/GameplayStatics.h"
 #include "GameFramework/Controller.h"
 #include "PlayerProjectile.h"
 #include "Components/SphereComponent.h"
@@ -36,6 +37,7 @@ AMyCharacter::AMyCharacter()
 
 	//Throw logic
 	ChargedTime = 0.0f;
+	isCharging = false;
 	isThrowing = false;
 	canTeleport = false;
 	Projectile = nullptr;
@@ -52,8 +54,30 @@ void AMyCharacter::BeginPlay()
 void AMyCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
 	//족쇄때문에 느릿하게 움직이기
 	GetCharacterMovement()->Velocity *= 0.8f;
+
+	//차징할때는 계속해서 경로 예측
+	if (isCharging) {
+		//던질 궤적 예측
+		float tempTime;
+		tempTime  = GetWorld()->GetTimeSeconds() - ChargedTime;
+		tempTime = floor(tempTime * 100) / 100; //소수점 2자리 아래로는 버려버리기
+		tempTime = FMath::Clamp(tempTime, 0.0f, 1.0f); //0에서 1초 사이로 차지 두기(무한대 차징 금지)
+		
+		float SpawnDistance = 70.f;
+		float Power = 1000.0f;
+		FVector SpawnLocation = this->GetMesh()->GetSocketLocation(FName("ProjectileSocket")) + (GetActorForwardVector() * SpawnDistance); //소켓에서 던지기
+		FVector startLoc = this->GetMesh()->GetSocketLocation(FName("ProjectileSocket")) + (GetActorForwardVector() * SpawnDistance); //소켓에서 던지기
+		FVector outVelocity = UKismetMathLibrary::GetDirectionUnitVector(this->GetMesh()->GetSocketLocation(FName("ProjectileSocket")), SpawnLocation) * Power * tempTime;
+		FPredictProjectilePathParams predictParams(0.0f, startLoc, outVelocity, 1.0f);   // 20: tracing 보여질 프로젝타일 크기, 15: 시물레이션되는 Max 시간(초)
+		//predictParams.DrawDebugTime = 15.0f;     //디버그 라인 보여지는 시간 (초)
+		predictParams.DrawDebugType = EDrawDebugTrace::Type::ForOneFrame;  // DrawDebugTime 을 지정하면 EDrawDebugTrace::Type::ForDuration 필요.
+		predictParams.OverrideGravityZ = GetWorld()->GetGravityZ();
+		FPredictProjectilePathResult result;
+		UGameplayStatics::PredictProjectilePath(this, predictParams, result);
+	}
 }
 
 // Called to bind functionality to input
@@ -67,10 +91,14 @@ void AMyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 	PlayerInputComponent->BindAxis("MoveRight", this, &AMyCharacter::MoveRight);
 	PlayerInputComponent->BindAxis("MoveForward", this, &AMyCharacter::MoveForward);
 
+	PlayerInputComponent->BindAxis("Turn", this, &APawn::AddControllerYawInput);
+	PlayerInputComponent->BindAxis("LookUp", this, &APawn::AddControllerPitchInput);
+
 	//Throw
 	PlayerInputComponent->BindAction("Throw", IE_Pressed, this, &AMyCharacter::PreThrowBall);
 	PlayerInputComponent->BindAction("Throw", IE_Released, this, &AMyCharacter::ThrowBall);
 
+	
 }
 
 void AMyCharacter::MoveRight(float Value)
@@ -101,6 +129,10 @@ void AMyCharacter::PreThrowBall() {
 	{
 		UE_LOG(LogTemp, Log, TEXT("Pressed :%f"), GetWorld()->GetTimeSeconds());
 		ChargedTime = GetWorld()->GetTimeSeconds();
+	
+		isCharging = true;
+
+	  
 	}
 
 }
@@ -109,6 +141,7 @@ void AMyCharacter::ThrowBall() {
 	//공던지기
 	if (!isThrowing)
 	{
+		isCharging = false;
 		isThrowing = true;
 
 		ChargedTime = GetWorld()->GetTimeSeconds() - ChargedTime;
@@ -128,14 +161,16 @@ void AMyCharacter::ThrowBall() {
 
 				float SpawnDistance = 70.f;
 				float Power = 1000.0f;
-				FVector SpawnLocation = this->GetActorLocation() + (GetActorForwardVector() * SpawnDistance); //던질 방향
+				//FVector SpawnLocation = this->GetActorLocation() + (GetActorForwardVector() * SpawnDistance); //던질 방향
+				FVector SpawnLocation = this->GetMesh()->GetSocketLocation(FName("ProjectileSocket")) + (GetActorForwardVector() * SpawnDistance); //소켓에서 던지기
 				FRotator Rotation = GetActorForwardVector().Rotation(); //회전
 
                 Projectile = World->SpawnActor<APlayerProjectile>(PlayerProjectile, SpawnLocation, Rotation, SpawnParams);
 
 				if (Projectile) {
 					Projectile->SphereComponent->MoveIgnoreActors.Add(SpawnParams.Owner);
-					FVector temp = UKismetMathLibrary::GetDirectionUnitVector(this->GetActorLocation(), SpawnLocation) * Power * ChargedTime;
+					//FVector temp = UKismetMathLibrary::GetDirectionUnitVector(this->GetActorLocation(), SpawnLocation) * Power * ChargedTime;
+					FVector temp = UKismetMathLibrary::GetDirectionUnitVector(this->GetMesh()->GetSocketLocation(FName("ProjectileSocket")), SpawnLocation) * Power * ChargedTime;
 					Projectile->getMovement()->Velocity = temp;
 
 					//차지타임 출력

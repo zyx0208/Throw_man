@@ -45,6 +45,7 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+	bool isCharging;
 	bool isThrowing;
 	bool canTeleport;
 
