@@ -34,16 +34,19 @@ protected:
 	// 적 캐릭터가 이전 프레임에 플레이어를 볼 수 있는가
 	bool bPreviousCanSeePlayer = false;
 
-	// 적 캐릭터와 플레이어의 거리
-	//float characterDistance = 0.0f;
-	// 적 캐릭터 속도
-	float Speed = 0.f;
+	// 적 캐릭터 설정 속도
+	float Speed = 100.f;
+	
+	// 적 이동
+	FVector Direction;
+	float Distance;
 
 	// 총알 발사 간격 타이머
 	FTimerHandle FireTimerHandle;
 	float FireInterval = 0.5f;
 	float FireDelay = 0.1f;
 	void FireBullet();
+	bool isFireTimerSeted = false;
 
 public:	
 	// Called every frame
