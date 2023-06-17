@@ -6,6 +6,7 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/Character.h"
+#include "Engine/SkeletalMesh.h"
 #include "MyCharacter.generated.h"
 
 
@@ -21,6 +22,15 @@ class THROW_MAN_API AMyCharacter : public ACharacter
 
 	UPROPERTY(EditAnywhere)
 		TSubclassOf<class APlayerProjectile> PlayerProjectile;
+	
+	UPROPERTY(EditAnywhere)
+	UAnimMontage* ThrowMontage;
+
+	/*
+	UPROPERTY(EditAnywhere)
+    USkeletalMeshComponent* ballMesh;
+	*/
+
 
 public:
 	// Sets default values for this character's properties
@@ -45,8 +55,16 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+	void SpawnProjectile();
+
+	UFUNCTION(BlueprintImplementableEvent)
+		void setBallInVisible();
+	UFUNCTION(BlueprintImplementableEvent)
+		void setBallVisible();
+
 	bool isCharging;
 	bool isThrowing;
 	bool canTeleport;
+
 
 };

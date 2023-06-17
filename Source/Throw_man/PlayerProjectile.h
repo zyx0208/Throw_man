@@ -29,7 +29,9 @@ protected:
 public:	
 	// Sets default values for this actor's properties
 	APlayerProjectile();
+	UProjectileMovementComponent* getMovement();
 	UFUNCTION()
 		void OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
-	UProjectileMovementComponent* getMovement();
+	
+
 };
