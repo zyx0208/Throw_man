@@ -3,6 +3,9 @@
 
 #include "HealthComponent.h"
 #include "Kismet/KismetSystemLibrary.h"
+#include "GameFramework/Character.h"
+#include "MyCharacter.h"
+#include "kismet/GameplayStatics.h"
 
 // Sets default values for this component's properties
 UHealthComponent::UHealthComponent()
@@ -35,11 +38,23 @@ void UHealthComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 }
 
 void UHealthComponent::LoseHealth(int Amount) {
-	Health -= Amount;
+	Healths = Healths - Amount;
+	AMyCharacter* PlayerCharacter = Cast<AMyCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
+	//PlayerCharacter->ChangeSubtractHealth();
+	GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Red, FString::Printf(TEXT("Amount : %d"), Amount));
 
-	if (Health <= 0) {
-		Health = 0;
+
+	if (Healths <= 0) {
+		Healths = 0;
 
 		UKismetSystemLibrary::QuitGame(this, nullptr, EQuitPreference::Quit, true);
 	}
+}
+
+void UHealthComponent::SetHealth(int Value) {
+	Healths = Value;
+}
+
+int UHealthComponent::GetHealth() {
+	return Healths;
 }

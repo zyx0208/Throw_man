@@ -7,7 +7,7 @@
 #include "HealthComponent.generated.h"
 
 
-UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
+UCLASS(Blueprintable, BlueprintType)
 class THROW_MAN_API UHealthComponent : public UActorComponent
 {
 	GENERATED_BODY()
@@ -20,9 +20,7 @@ protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 
-	// 소유자의 초기 및 현재 체력 점수의 양
-	UPROPERTY(EditAnywhere, Category = Health)
-	int Health = 100;
+	
 
 public:	
 	// Called every frame
@@ -30,4 +28,16 @@ public:
 
 	// 소유자로부터 체력 점수를 뺏는다
 	void LoseHealth(int Amount);
+
+	
+
+	// 소유자의 초기 및 현재 체력 점수의 양
+	UPROPERTY(EditAnywhere, Category = Health, BlueprintReadWrite)
+		int Healths = 100;
+
+	UFUNCTION(BlueprintCallable)
+		int GetHealth();
+
+	UFUNCTION(BlueprintCallable)
+		void SetHealth(int value);
 };

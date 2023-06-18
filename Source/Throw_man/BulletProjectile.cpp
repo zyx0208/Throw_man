@@ -35,14 +35,15 @@ void ABulletProjectile::BeginPlay()
 {
 	Super::BeginPlay();
 
-	/*
+	
 	// 추가한 함수와 바인딩을 통해 OnComponentHit 이벤트를 받도록 설정
 	SphereComponent->OnComponentHit.AddDynamic(this, &ABulletProjectile::OnHit);
-	*/
+	
+	/*
 	// 구체에 충돌 발생 시 OnHit 함수 실행
 	FScriptDelegate ScriptDelegate;
 	ScriptDelegate.BindUFunction(this, FName("OnHit"));
-	SphereComponent->OnComponentHit.Add(ScriptDelegate);
+	SphereComponent->OnComponentHit.Add(ScriptDelegate);*/
 	
 	SetLifeSpan(5.f);
 }
@@ -62,6 +63,7 @@ void ABulletProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherAc
 		UHealthComponent* HealthComponent = Player->FindComponentByClass<UHealthComponent>();
 		if (HealthComponent != nullptr) {
 			HealthComponent->LoseHealth(Damage);
+			Destroy();
 		}
 	}
 	// 물체에 닿으면 총알 삭제

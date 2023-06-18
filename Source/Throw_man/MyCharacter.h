@@ -7,6 +7,7 @@
 #include "Camera/CameraComponent.h"
 #include "GameFramework/Character.h"
 #include "Engine/SkeletalMesh.h"
+#include "HealthComponent.h"
 #include "MyCharacter.generated.h"
 
 
@@ -26,11 +27,6 @@ class THROW_MAN_API AMyCharacter : public ACharacter
 	UPROPERTY(EditAnywhere)
 	UAnimMontage* ThrowMontage;
 	
-	class UHealthComponent* HealthComponent;
-	/*
-	UPROPERTY(EditAnywhere)
-    USkeletalMeshComponent* ballMesh;
-	*/
 
 
 public:
@@ -43,6 +39,9 @@ public:
 		class USoundBase* throwing_shackles;
 	UPROPERTY(EditAnywhere, Category = Sound)
 		class USoundBase* Hit_shackles_sound;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		class UHealthComponent* HealthComponent;
+
 
 protected:
 	// Called when the game starts or when spawned
@@ -69,6 +68,8 @@ public:
 		void setBallInVisible();
 	UFUNCTION(BlueprintImplementableEvent)
 		void setBallVisible();
+	UFUNCTION(BlueprintImplementableEvent)
+		void ChangeSubtractHealth();
 
 	bool isCharging;
 	bool isThrowing;
