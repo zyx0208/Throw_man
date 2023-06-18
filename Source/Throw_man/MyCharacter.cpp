@@ -121,6 +121,7 @@ void AMyCharacter::Tick(float DeltaTime)
 				FVector temp = Projectile->GetActorLocation();
 				FVector MAXVector = this->GetActorLocation() + UKismetMathLibrary::GetDirectionUnitVector(this->GetActorLocation(), temp) * 700;
 
+				//만약 이동한다면 족쇄 위치로 텔레포트 시켜 이동 거리를 제한한다
 				SetActorRelativeLocation(MAXVector, false, (FHitResult*)nullptr, ETeleportType::ResetPhysics);
 			}
 
@@ -243,32 +244,7 @@ void AMyCharacter::SpawnProjectile()
 	UWorld* World = GetWorld();
 	if (World) {
 		
-		/*
-		// 변수의 이름으로 검색하여 UProperty 를 가져온다.
-		UProperty* Prop = GetClass()->FindPropertyByName("Sphere");
-
-		// 현재 클래스의 변수가 맞는지 비교
-		if (Prop->GetClass() == UObjectProperty::StaticClass())
-		{
-			UObjectProperty* objectProp = Cast<UObjectProperty>(Prop);
-
-			// if (objectProp->PropertyClass == 원하는변수의 클래스형태::StaticClass())
-			// 예제 시작
-			if (objectProp->PropertyClass == USkeletalMeshComponent::StaticClass())
-			{
-				UObject* obj = objectProp->GetObjectPropertyValue_InContainer(this);
-
-				USkeletalMeshComponent* ballMesh = Cast<USkeletalMeshComponent>(obj);
-				if (IsValid(ballMesh))
-				{
-					ballMesh->SetVisibility(false);
-					//UPrimitiveComponent::SetVisibility(false)
-					//UPrimitiveComponent::SetVisibility()
-					// 예제 끝
-				}
-			}
-		}*/
-
+		//공 안보이게 하기
 		setBallInVisible();
 
 		//던지기
