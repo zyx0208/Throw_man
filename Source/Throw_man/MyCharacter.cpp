@@ -222,6 +222,7 @@ void AMyCharacter::ThrowBall() {
 		{
 			GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Emerald, FString::Printf(TEXT("teleport")));
 			FVector teleportPos = Projectile->GetActorLocation();
+			teleportPos.Z += 100.0f;
 			this->SetActorRelativeLocation(teleportPos, false, (FHitResult*)nullptr, ETeleportType::TeleportPhysics);
 			Projectile->Destroy();
 			Projectile = nullptr;
