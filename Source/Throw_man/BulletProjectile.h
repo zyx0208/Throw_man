@@ -28,7 +28,7 @@ protected:
 
 	// 총알 데미지
 	UPROPERTY(EditAnywhere, Category = bullet)
-	float Damage = 34.f;
+	float Damage = 20.f;
 
 public:	
 	// Called every frame
