@@ -14,6 +14,7 @@
 #include "Components/PrimitiveComponent.h"
 #include "Engine/SkeletalMesh.h"
 #include "GameFramework/ProjectileMovementComponent.h"
+#include "HealthComponent.h"
 
 // Sets default values
 AMyCharacter::AMyCharacter()
@@ -44,6 +45,10 @@ AMyCharacter::AMyCharacter()
 	isThrowing = false;
 	canTeleport = false;
 	Projectile = nullptr;
+
+	//healthComponent
+	HealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("HealthComponent"));
+
 }
 
 // Called when the game starts or when spawned
@@ -57,6 +62,9 @@ void AMyCharacter::BeginPlay()
 void AMyCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	//걷는 효과음은 애니메이션 노티파이로 재생
+
 
 	if (!canTeleport) {
 		//족쇄 달고 있을 때는 느릿하게 움직이기
@@ -116,13 +124,21 @@ void AMyCharacter::Tick(float DeltaTime)
 			//UE_LOG(LogTemp, Log, TEXT("Distance :%f"), Distance);
 
 
-			if (Distance > 700.f) {
+			if (Distance > 1000.f) {
 				//플레이어의 위치는 족쇄까지의 거리가 700이 되는 원의 방정식 x,y에서만 이동이 가능하다.
 				FVector temp = Projectile->GetActorLocation();
 				FVector MAXVector = this->GetActorLocation() + UKismetMathLibrary::GetDirectionUnitVector(this->GetActorLocation(), temp) * 700;
 
 				//만약 이동한다면 족쇄 위치로 텔레포트 시켜 이동 거리를 제한한다
 				SetActorRelativeLocation(MAXVector, false, (FHitResult*)nullptr, ETeleportType::ResetPhysics);
+
+				//텔레포트 한 판정
+				Projectile->Destroy();
+				Projectile = nullptr;
+
+				canTeleport = false;
+				isThrowing = false;
+				setBallVisible();
 			}
 
 
@@ -137,8 +153,8 @@ void AMyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
-	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
-	PlayerInputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
+	//PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
+	//PlayerInputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
 
 	PlayerInputComponent->BindAxis("MoveRight", this, &AMyCharacter::MoveRight);
 	PlayerInputComponent->BindAxis("MoveForward", this, &AMyCharacter::MoveForward);
@@ -246,6 +262,11 @@ void AMyCharacter::SpawnProjectile()
 		
 		//공 안보이게 하기
 		setBallInVisible();
+
+		//효과음
+		if (throwing_shackles != nullptr) {
+			UGameplayStatics::PlaySoundAtLocation(this, throwing_shackles, GetActorLocation(), 1.0f);
+		}
 
 		//던지기
 		FActorSpawnParameters SpawnParams;

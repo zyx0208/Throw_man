@@ -21,13 +21,13 @@ protected:
 	virtual void BeginPlay() override;
 
 	// 소유자의 초기 및 현재 체력 점수의 양
-	UPROPERTY(EditDefaultsOnly, Category = Health)
-	float Health = 100.f;
+	UPROPERTY(EditAnywhere, Category = Health)
+	int Health = 100;
 
 public:	
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 	// 소유자로부터 체력 점수를 뺏는다
-	void LoseHealth(float Amount);
+	void LoseHealth(int Amount);
 };

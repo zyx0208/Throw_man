@@ -10,7 +10,7 @@
 #include "MyCharacter.generated.h"
 
 
-UCLASS()
+UCLASS()   
 class THROW_MAN_API AMyCharacter : public ACharacter
 {
 	GENERATED_BODY()
@@ -25,7 +25,8 @@ class THROW_MAN_API AMyCharacter : public ACharacter
 	
 	UPROPERTY(EditAnywhere)
 	UAnimMontage* ThrowMontage;
-
+	
+	class UHealthComponent* HealthComponent;
 	/*
 	UPROPERTY(EditAnywhere)
     USkeletalMeshComponent* ballMesh;
@@ -35,6 +36,13 @@ class THROW_MAN_API AMyCharacter : public ACharacter
 public:
 	// Sets default values for this character's properties
 	AMyCharacter();
+
+	UPROPERTY(EditAnywhere, Category = Sound)
+		class USoundBase* damaged_sound;
+	UPROPERTY(EditAnywhere, Category = Sound)
+		class USoundBase* throwing_shackles;
+	UPROPERTY(EditAnywhere, Category = Sound)
+		class USoundBase* Hit_shackles_sound;
 
 protected:
 	// Called when the game starts or when spawned

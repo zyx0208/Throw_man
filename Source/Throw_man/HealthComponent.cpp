@@ -34,11 +34,11 @@ void UHealthComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 	// ...
 }
 
-void UHealthComponent::LoseHealth(float Amount) {
+void UHealthComponent::LoseHealth(int Amount) {
 	Health -= Amount;
 
-	if (Health <= 0.f) {
-		Health = 0.f;
+	if (Health <= 0) {
+		Health = 0;
 
 		UKismetSystemLibrary::QuitGame(this, nullptr, EQuitPreference::Quit, true);
 	}
