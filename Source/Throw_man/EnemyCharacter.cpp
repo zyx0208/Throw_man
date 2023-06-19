@@ -65,9 +65,6 @@ void AEnemyCharacter::Tick(float DeltaTime)
 	*/
 	/* 발사 시작 타이머 설정 조건 */
 	// 조건1: 플레이어가 보이고, 거리가 300 이하
-	if (bCanSeePlayer) {
-		//UE_LOG(LogTemp, Log, TEXT("I can see"));
-	}
 	if (bCanSeePlayer && Distance <= 300.f) {
 		//UE_LOG(LogTemp, Log, TEXT("I'm in your range"));
 		// 조건2: 이미 타이머가 설정되어 있지 않을 것
@@ -121,7 +118,7 @@ bool AEnemyCharacter::LookAtActor(AActor* TargetActor) {
 		GetWorld(),
 		SightSource->GetComponentLocation(),
 		TargetActor,
-		IgnoreActors)) {
+		IgnoreActors) && Distance <= 1500.f) {
 		FVector Start = GetActorLocation();
 		FVector End = TargetActor->GetActorLocation();
 		// 회전 계산

@@ -43,8 +43,8 @@ protected:
 
 	// 총알 발사 간격 타이머
 	FTimerHandle FireTimerHandle;
-	float FireInterval = 0.5f;
-	float FireDelay = 0.1f;
+	float FireInterval = 1.f;
+	float FireDelay = 1.f;
 	void FireBullet();
 	bool isFireTimerSeted = false;
 

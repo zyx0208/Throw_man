@@ -14,7 +14,9 @@ class THROW_MAN_API APlayerProjectile : public AActor
 public:	
 	UPROPERTY(VisibleDefaultsOnly, Category = Projectile)
 		class USphereComponent* SphereComponent;
-	
+
+	UPROPERTY(EditAnywhere, Category = Sound)
+		class USoundBase* damaged_sound;
 private:
 	UPROPERTY(VisibleAnywhere, Category = Projectile)
 		class UStaticMeshComponent* MeshComp;
