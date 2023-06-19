@@ -82,6 +82,5 @@ public:
 	bool isThrowing;
 	bool canTeleport;
 
-	UFUNCTION(BlueprintCallable)
-		void ResetThrowing();
+
 };

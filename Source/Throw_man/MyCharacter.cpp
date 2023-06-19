@@ -262,15 +262,19 @@ void AMyCharacter::ThrowBall() {
 			if (TeleportParticles != nullptr) {
 				UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), TeleportParticles, teleportPos, FRotator::ZeroRotator, (FVector)(1.0f));
 			}
-			ResetThrowing();
-			
+
+			Projectile->Destroy();
+			Projectile = nullptr;
+
+			canTeleport = false;
+			isThrowing = false;
+
+			setBallVisible();
 		}
 		
 	}
 
 }
-
-
 
 //UAnim_ProjectileNotify::Notify()  
 void AMyCharacter::SpawnProjectile()
@@ -311,15 +315,4 @@ void AMyCharacter::SpawnProjectile()
 	}
 
 	ChargedTime = 0.0f;
-}
-
-void AMyCharacter::ResetThrowing()
-{
-	Projectile->Destroy();
-	Projectile = nullptr;
-
-	canTeleport = false;
-	isThrowing = false;
-
-	setBallVisible();
 }
