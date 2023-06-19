@@ -38,7 +38,9 @@ void UHealthComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 	if (Healths <= 0) {
 		Healths = 0;
 
-		UKismetSystemLibrary::QuitGame(this, nullptr, EQuitPreference::Quit, true);
+		//UKismetSystemLibrary::QuitGame(this, nullptr, EQuitPreference::Quit, true);
+		AMyCharacter* PlayerCharacter = Cast<AMyCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
+		UGameplayStatics::OpenLevel(PlayerCharacter, FName("0_Start"));
 	}
 }
 
