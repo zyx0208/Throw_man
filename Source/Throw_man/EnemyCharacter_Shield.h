@@ -39,13 +39,10 @@ protected:
 	// 적 이동
 	FVector Direction;
 	float Distance;
+	FVector UnitDirection;
 
-	// 공격 간격 타이머
-	FTimerHandle AttackTimerHandle;
-	float AttackInterval = 0.5f;
-	float AttackDelay = 0.1f;
 	void Attack();
-	bool isAttackTimerSeted = false;
+	bool canAttack = false;
 
 public:	
 	// Called every frame

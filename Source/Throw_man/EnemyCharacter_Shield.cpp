@@ -44,30 +44,30 @@ void AEnemyCharacter_Shield::Tick(float DeltaTime)
 	// 플레이어 캐릭터와의 거리
 	Direction = PlayerCharacter->GetActorLocation() - GetActorLocation();
 	Distance = Direction.Size();
+	UnitDirection = Direction.GetSafeNormal();
 
 	/* 공격 시작 타이머 설정 조건 */
 	// 조건1: 플레이어가 보이고, 거리가 300 이하
-	if (bCanSeePlayer) {
-		//UE_LOG(LogTemp, Log, TEXT("I can see"));
+	if (bCanSeePlayer && Distance <= 300.f && !canAttack) {
+		// 달리기
+		canAttack = true;
+		GetCharacterMovement()->MaxWalkSpeed = Speed * 2;
 	}
-	if (bCanSeePlayer && Distance <= 300.f) {
-		//UE_LOG(LogTemp, Log, TEXT("I'm in your range"));
-		// 조건2: 이미 타이머가 설정되어 있지 않을 것
-		if (!isAttackTimerSeted) {
-			UE_LOG(LogTemp, Log, TEXT("Fire Timer Start"));
-			// 공격 시작
-			GetWorldTimerManager().SetTimer(AttackTimerHandle, this, &AEnemyCharacter_Shield::Attack, AttackInterval, true, AttackDelay);
-			isAttackTimerSeted = true;
-		}
-	}
-		else if (isAttackTimerSeted) {	// 둘 다 아니고 발사 타이머 시작돼 있으면 타이머 중지할 것
-			UE_LOG(LogTemp, Log, TEXT("Attack Timer Stop"));
-			// 총알 발사 중지
-			GetWorldTimerManager().ClearTimer(AttackTimerHandle);
-			isAttackTimerSeted = false;
-		}
+	else if (canAttack && Distance <= 90.f) {
+		UE_LOG(LogTemp, Log, TEXT("Push"));
+		// 공격 성공. 튕겨내기.
+		PlayerCharacter->LaunchCharacter(Direction * Speed, false, true);
 
-		bPreviousCanSeePlayer = bCanSeePlayer;
+		// 속도 설정 초기화, 공격 가능 초기화
+		GetCharacterMovement()->MaxWalkSpeed = Speed;
+		canAttack = false;
+	}
+	else if ((canAttack && !bCanSeePlayer) || (canAttack && Distance > 1000)) {	// 평소 상태
+		GetCharacterMovement()->MaxWalkSpeed = Speed;
+		canAttack = false;
+	}
+
+	UE_LOG(LogTemp, Log, TEXT("Distance: %f"), Distance);
 }
 
 // Called to bind functionality to input
@@ -88,7 +88,7 @@ bool AEnemyCharacter_Shield::LookAtActor(AActor* TargetActor) {
 		GetWorld(),
 		SightSource->GetComponentLocation(),
 		TargetActor,
-		IgnoreActors)) {
+		IgnoreActors) && Distance <= 1000) {
 		FVector Start = GetActorLocation();
 		FVector End = TargetActor->GetActorLocation();
 		// 회전 계산
