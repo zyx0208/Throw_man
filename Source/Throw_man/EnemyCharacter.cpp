@@ -141,6 +141,16 @@ void AEnemyCharacter::FireBullet() {
 	}
 	UE_LOG(LogTemp, Log, TEXT("Fire"));
 
+	//효과음
+	if (gun_sound != nullptr) {
+		UGameplayStatics::PlaySoundAtLocation(this, gun_sound, GetActorLocation(), 1.0f);
+	}
+
+	//이펙트
+	if (GunParticles != nullptr) {
+		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), GunParticles, GetMesh()->GetSocketLocation(FName("weapon_gunHall")), FRotator::ZeroRotator, (FVector)(0.2f));
+	}
+
 	FVector ForwardVector = GetActorForwardVector();
 	float SpawnDistance = 40.f;
 	FVector SpawnLocation = GetMesh()->GetSocketLocation(FName("weapon_hand_r")) + (ForwardVector * SpawnDistance);

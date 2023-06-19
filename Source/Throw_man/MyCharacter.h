@@ -39,9 +39,16 @@ public:
 		class USoundBase* throwing_shackles;
 	UPROPERTY(EditAnywhere, Category = Sound)
 		class USoundBase* Hit_shackles_sound;
+	UPROPERTY(EditAnywhere, Category = Sound)
+		class USoundBase* teleport_sound;
+	UPROPERTY(EditAnywhere, Category = Sound)
+		class USoundBase* preThrow_sound;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		class UHealthComponent* HealthComponent;
 
+	UPROPERTY(EditAnywhere, Category = Particles)
+		class UParticleSystem* TeleportParticles;
 
 protected:
 	// Called when the game starts or when spawned

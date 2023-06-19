@@ -24,7 +24,8 @@ private:
 		TSubclassOf<class APlayerProjectile> PlayerProjectile;
 
 protected:
-
+	UPROPERTY(EditAnywhere, Category = Particles)
+		class UParticleSystem* HitParticles;
 
 public:	
 	// Sets default values for this actor's properties

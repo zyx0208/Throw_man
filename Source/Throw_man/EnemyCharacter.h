@@ -48,6 +48,11 @@ protected:
 	void FireBullet();
 	bool isFireTimerSeted = false;
 
+	UPROPERTY(EditAnywhere, Category = Sound)
+		class USoundBase* gun_sound;
+
+	UPROPERTY(EditAnywhere, Category = Particles)
+		class UParticleSystem* GunParticles;
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -58,4 +63,6 @@ public:
 	// bullet 오브젝트를 생성하는 데 사용하는 클래스
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Bullet)
 	TSubclassOf<class ABulletProjectile> BulletClass;
+
+	
 };

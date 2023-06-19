@@ -54,7 +54,12 @@ void APlayerProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, 
 	AMyCharacter* PlayerCharacter = Cast<AMyCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
 	PlayerCharacter->canTeleport = true;
 	
-	
+	//충돌 이펙트 재생
+	if (HitParticles != nullptr && ProjectileMovement->Velocity.Size() > 350.0f) {
+		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), HitParticles, GetActorLocation(), FRotator::ZeroRotator, (FVector)(FMath::RandRange(0.5f, 1.0f)));
+	}
+
+
 	//충돌 효과음 재생
 	//현재 족쇄가 350f 이상의 힘을 가지고 있을 때만 재생 ( 통통 튀길때 계속 효과음 발생하는거 방지 )
 	//GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Red, FString::Printf(TEXT("Ball Hit Size : %f"), ProjectileMovement->Velocity.Size()));

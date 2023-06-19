@@ -132,7 +132,11 @@ void AMyCharacter::Tick(float DeltaTime)
 				//만약 이동한다면 족쇄 위치로 텔레포트 시켜 이동 거리를 제한한다
 				SetActorRelativeLocation(MAXVector, false, (FHitResult*)nullptr, ETeleportType::ResetPhysics);
 
-				//텔레포트 한 판정
+				//텔레포트한 판정
+				if (teleport_sound != nullptr) {
+					UGameplayStatics::PlaySoundAtLocation(this, teleport_sound, GetActorLocation(), 1.0f);
+				}
+
 				Projectile->Destroy();
 				Projectile = nullptr;
 
@@ -195,6 +199,7 @@ void AMyCharacter::PreThrowBall() {
 
 	if (!isThrowing)
 	{
+
 		UE_LOG(LogTemp, Log, TEXT("Pressed :%f"), GetWorld()->GetTimeSeconds());
 		ChargedTime = GetWorld()->GetTimeSeconds();
 	
@@ -238,9 +243,26 @@ void AMyCharacter::ThrowBall() {
 		if (Projectile)
 		{
 			GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Emerald, FString::Printf(TEXT("teleport")));
+
+			//이펙트 재생 (시작)
+			if (TeleportParticles != nullptr) {
+				UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), TeleportParticles, GetActorLocation(), FRotator::ZeroRotator, (FVector)(1.0f));
+			}
+
+			//효과음
+			if (teleport_sound != nullptr) {
+				UGameplayStatics::PlaySoundAtLocation(this, teleport_sound, GetActorLocation(), 1.0f);
+			}
+
 			FVector teleportPos = Projectile->GetActorLocation();
 			teleportPos.Z += 100.0f;
 			this->SetActorRelativeLocation(teleportPos, false, (FHitResult*)nullptr, ETeleportType::TeleportPhysics);
+
+			//이펙트 재생 (끝)
+			if (TeleportParticles != nullptr) {
+				UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), TeleportParticles, teleportPos, FRotator::ZeroRotator, (FVector)(1.0f));
+			}
+
 			Projectile->Destroy();
 			Projectile = nullptr;
 
