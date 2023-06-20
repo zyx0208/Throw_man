@@ -32,7 +32,7 @@ bool UBulletFunctionLibrary::CanSeeActor(const UWorld* World,
 	World->LineTraceSingleByChannel(Hit, Start, End, Channel, QueryParams);
 
 	// 게임에서 라인 트레이스 보여주기
-	DrawDebugLine(World, Start, End, FColor::Red);
+	//DrawDebugLine(World, Start, End, FColor::Red);
 
 	return !Hit.bBlockingHit;
 }

@@ -242,7 +242,7 @@ void AMyCharacter::ThrowBall() {
 	{
 		if (Projectile)
 		{
-			GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Emerald, FString::Printf(TEXT("teleport")));
+			//GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Emerald, FString::Printf(TEXT("teleport")));
 
 			//이펙트 재생 (시작)
 			if (TeleportParticles != nullptr) {

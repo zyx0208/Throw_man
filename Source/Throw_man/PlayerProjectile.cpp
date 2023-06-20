@@ -8,6 +8,7 @@
 #include "GameFramework/Character.h"
 #include "MyCharacter.h"
 #include "EnemyCharacter.h"
+#include "EnemyCharacter_Shield.h"
 
 
 // Sets default values
@@ -51,9 +52,11 @@ UProjectileMovementComponent* APlayerProjectile::getMovement()
 
 void APlayerProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
+	AMyCharacter* PlayerCharacter = Cast<AMyCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
 	/* 적과의 충돌 여부 판단 */
 	AEnemyCharacter* EnemyPistol = Cast<AEnemyCharacter>(OtherActor);
-	if (EnemyPistol != nullptr) {
+	AEnemyCharacter_Shield* EnemyShield = Cast<AEnemyCharacter_Shield>(OtherActor);
+	if (EnemyPistol != nullptr || EnemyShield != nullptr) {
 		UE_LOG(LogTemp, Log, TEXT("Enemy Hit!"));
 
 		// 족쇄에 닿으면 적 삭제
@@ -67,7 +70,6 @@ void APlayerProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, 
 	}
 	else {
 		/* 텔레포트 가능 여부 판단 */
-		AMyCharacter* PlayerCharacter = Cast<AMyCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
 		PlayerCharacter->canTeleport = true;
 
 		//충돌 이펙트 재생
